@@ -8,12 +8,12 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #e0e5ec;
+            padding: 0;
+            min-height: 100vh;
+            margin:0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
         }
         h1 {
             text-align: center;
@@ -27,27 +27,25 @@
             padding: 20px;
             font-size: 20px;
             font-weight: bold;
+            margin: 25px;
         }
     </style>
 </head>
 <body>
     <div id="clock">
-    <h1>Right now, the time in <b><u>Pulses</u></b> is:</h1>
-    <div id="currentTimeInPulses"></div>
+        <h1>Right now, the time in <b><u>Pulses</u></b> is:</h1>
+        <div id="currentTimeInPulses"></div>
     </div>
-    
 </body>
 <script>
-    setInterval(updateCurrentTimeInPulses, 864/10);
-    function timeToPulse(time) {
+    setInterval(updateCurrentTimeInPulses, 86.4);
+
+    function datetimeToPulse(time) {
         const startOfDay = new Date(time.getFullYear(), time.getMonth(), time.getDate());
-        const totalSeconds = (time.getTime() - startOfDay.getTime()) / 1000;
-        const pulses = totalSeconds / 86.4;
-        
-        return pulses;
+        return (time.getTime() - startOfDay.getTime()) / 1000 / 86.4;
     }
 
-    function getTimeInPulses(pulses) {
+    function getCurrentPulseClock(pulses) {
         const inMilliseconds = pulses * 86.4 * 1000;
         const now = new Date();
         const startOfDayInMilliseconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -57,11 +55,10 @@
         const Decipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse) * 10);
         const Centipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse - Decipulse / 10) * 100);
         return htmlWrap(`<b>${Hectopulse}:${Dekapulse}${Pulse}:${Decipulse}${Centipulse} cp</b>`, 50)
-           + htmlWrap(`<b>${Hectopulse}</b> hectopulses, <b>${Dekapulse}</b> dekapulses, <b>${Pulse}</b> pulses, <b>${Decipulse}</b> decipulses, and <b>${Centipulse}</b> centipulses<br/>`, 16)
-        + htmlWrap(`<b>${pulses.toFixed(3)}</b> total pulses`, 18)
-        
-        + `<p style="color:lightcoral; text-align: center; font-size: 11px;">(instead of <b>${new Date(startOfDayInMilliseconds + inMilliseconds).toLocaleTimeString()}</b>)</p>`
-        + `<p style="color:lightblue; text-align: center; font-size: 11px;">*cp stands for centipulses</p>`;
+            + htmlWrap(`<b>${Hectopulse}</b> hectopulses, <b>${Dekapulse}</b> dekapulses, <b>${Pulse}</b> pulses, <b>${Decipulse}</b> decipulses, and <b>${Centipulse}</b> centipulses<br/>`, 16)
+            + htmlWrap(`<b>${pulses.toFixed(3)}</b> total pulses`, 18)
+            + `<p style="text-align:center; margin: 0;"><a href="/" style="text-align: center; font-size: 12px;">What are pulses?</a></p>`
+            + `<p style="color:blue; text-align: center; font-size: 12px; opacity: 0.5; margin: 0;">* cp stands for centipulses</p>`;
     }
 
     function htmlWrap(string, font){
@@ -74,8 +71,8 @@
 
     function updateCurrentTimeInPulses() {
         const now = new Date();
-        const pulses = timeToPulse(now);
-        const pulsesString = getTimeInPulses(pulses);
+        const pulses = datetimeToPulse(now);
+        const pulsesString = getCurrentPulseClock(pulses);
         const currentTimeInPulses = document.getElementById("currentTimeInPulses");
         currentTimeInPulses.innerHTML = pulsesString;
     }
