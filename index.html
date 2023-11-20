@@ -30,6 +30,45 @@
     <h2>Right now, the time in pulses is:<br/><b id="currentTimeInPulses"></b></h2>
     <a href="/centipulse_clock.html">Click here to use the Centipulse Clock on your computer</a>
 
+    <h2>Convert non-metric time to pulses</h2>
+    <label for="hourInput">Hour:</label>
+    <select id="hourInput" onchange="convertTimeInPulses()">
+        <option value="0">12</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option> 
+        <option value="8">8</option> 
+        <option value="9">9</option> 
+        <option value="10">10</option> 
+        <option value="11">11</option>
+    </select>
+    <label for="minuteInput">Minute:</label>
+    <select id="minuteInput" onchange="convertTimeInPulses()">
+        <option value="0">00</option>
+        <option value="5">05</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30" selected>30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
+        <option value="55">55</option>
+    </select>
+    <label for="ampmInput">AM/PM:</label>
+    <select id="ampmInput" onchange="convertTimeInPulses()">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+    </select>
+    <p id="convertTimeInPulses"></p>
+
+
     <h2>Examples</h2>
     <div id="examples"></div>
 
@@ -38,7 +77,23 @@
     <script>
         setInterval(updateCurrentTimeInPulses, 86.4);
 
+        function convertTimeInPulses() {
+            var hour = document.getElementById('hourInput').value;
+            var minute = document.getElementById('minuteInput').value;
+            var ampm = document.getElementById('ampmInput').value;
+
+            var date = new Date();
+            date.setHours(ampm === 'PM' ? parseInt(hour) + 12 : hour);
+            date.setMinutes(minute);
+            date.setSeconds(0);
+            
+            const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+            document.getElementById('convertTimeInPulses').innerHTML = ((date.getTime() - startOfDay.getTime()) / 1000 / 86.4).toFixed(0) + " pulses";
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            convertTimeInPulses();
             let now = new Date();
             let startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
