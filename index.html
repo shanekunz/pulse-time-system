@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pulses</title>
+</head>
+<body>
+    <h2>
+        Introducing a new metric time system:
+    </h2>
+    <h1><u>Pulses</u></h1>
+    
+    <h2>
+        Our system is based on the idea that a day should be divided into 1000 pulses, rather than 24 hours. Time should be fully metric. This allows for a more intuitive way to think about time. Each pulse represents 86.4 seconds in old time.
+    </h2>
+    <h3>Millipulse:</h3> 
+    <p>A millipulse is one-thousandth of a pulse. It's a quick moment, ideal for precision timing in scientific experiments or athletic measurements.</p>
+    <h3>Centipulse:</h3>
+    <p>A centipulse is one-hundredth of a pulse. This unit is suitable for activities that require more granularity than a pulse but less than a millipulse, like quick kitchen timers or short-duration events.</p>
+    <h3>Decipulse:</h3>
+    <p>Representing one-tenth of a pulse, a decipulse is perfect for timing brief, everyday tasks, offering a balance between precision and practicality.</p>
+    <h3>Pulse:</h3>
+    <p>The core unit of our system, a pulse is equivalent to 86.4 seconds. It's the backbone of the system, adaptable for general timekeeping, from cooking to meeting durations.</p>
+    <h3>Dekapulse:</h3>
+    <p>Ten pulses make a dekapulse, which is useful for longer activities like workouts or short commutes, providing a convenient way to measure spans of time without reverting to traditional minutes and hours.</p>
+    <h3>Hectopulse:</h3>
+    <p>A hectopulse, which is one hundred pulses, can be used to track extended activities or events, like work periods or long journeys, offering a simple way to conceptualize larger chunks of time.</p>
+    <h3>Kilopulse:</h3>
+    <p>Equivalent to a day, a kilopulse forms the largest unit in our system. It's an intuitive way to think about daily cycles, from the start of a day to its end, aligning neatly with our natural rhythm of life.</p>
+    
+    <h2>Right now, the time in pulses is:<br/><b id="currentTimeInPulses"></b></h2>
+
+    <h2>Examples</h2>
+    <p>Here are some examples of how you might use our system in your daily life:</p>
+    <div id="examples"></div>
+
+    <a href="https://shanekunz.com">Idea brought to you by Shane Kunz</a>
+
+    <script>
+        setInterval(updateCurrentTimeInPulses, 864/10);
+        document.addEventListener("DOMContentLoaded", () => {
+            let now = new Date();
+            let startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            let endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            let intervals = 10;
+            let times = [startOfDay.getTime()];
+            for(let i = 1; i < intervals; i++){
+                times.push(startOfDay.getTime() + (endOfDay.getTime() - startOfDay.getTime()) * i / intervals);
+            }
+            times.push(endOfDay.getTime()-1);
+
+            const examples = document.getElementById("examples");
+            for(let i = 0; i < times.length - 1; i++){
+                const start = times[i];
+                const end = times[i + 1];
+                const startPulses = timeToPulse(new Date(start));
+                const endPulses = timeToPulse(new Date(end));
+                const duration = endPulses - startPulses;
+                const durationString = duration.toFixed(0);
+                const startString = new Date(start).toLocaleTimeString();
+                const endString = new Date(end).toLocaleTimeString();
+                examples.innerHTML += `<p>${startString} to ${endString} is ${durationString} pulses.</p>`;
+            }
+
+            examples.innerHTML += "<h3>Random Times</h3>";
+            const randomNumberOfTimes = 10;
+            for(let i = 0; i < randomNumberOfTimes; i++){
+                const randomTime = Math.floor(Math.random() * (endOfDay.getTime() - startOfDay.getTime())) + startOfDay.getTime();
+                const randomTimeString = new Date(randomTime).toLocaleTimeString();
+                const randomPulses = timeToPulse(new Date(randomTime));
+                const randomPulsesString = getTimeInPulses(randomPulses);
+                examples.innerHTML += `<p>${randomTimeString} is ${randomPulsesString}</p>`;
+            }
+        });
+
+        function getTimeInPulses(pulses) {
+            const inMilliseconds = pulses * 86.4 * 1000;
+            const now = new Date();
+            const startOfDayInMilliseconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const Hectopulse = Math.floor(pulses / 100);
+            const Dekapulse = Math.floor((pulses - Hectopulse * 100) / 10);
+            const Pulse = Math.floor(pulses - Hectopulse * 100 - Dekapulse * 10);
+            const Decipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse) * 10);
+            const Centipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse - Decipulse / 10) * 100);
+            return `${Hectopulse} hectopulses, ${Dekapulse} dekapulses, ${Pulse} pulses, ${Decipulse} decipulses, and ${Centipulse} centipulses.<br/>Or ${pulses.toFixed(3)} total pulses<br/>Or simply ${Hectopulse}:${Dekapulse}${Pulse}<br/>(instead of ${new Date(startOfDayInMilliseconds + inMilliseconds).toLocaleTimeString()})`;
+        }
+
+        function updateCurrentTimeInPulses() {
+            const now = new Date();
+            const pulses = timeToPulse(now);
+            const pulsesString = getTimeInPulses(pulses);
+            const currentTimeInPulses = document.getElementById("currentTimeInPulses");
+            currentTimeInPulses.innerHTML = pulsesString;
+        }
+
+        function timeToPulse(time) {
+            const startOfDay = new Date(time.getFullYear(), time.getMonth(), time.getDate());
+            const totalSeconds = (time.getTime() - startOfDay.getTime()) / 1000;
+            const pulses = totalSeconds / 86.4;
+            
+            return pulses;
+        }    
+    </script>
+</body>
+</html>
