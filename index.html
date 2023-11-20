@@ -28,6 +28,7 @@
     <p>Equivalent to a day, a kilopulse forms the largest unit in our system. It's an intuitive way to think about daily cycles, from the start of a day to its end, aligning neatly with our natural rhythm of life.</p>
     
     <h2>Right now, the time in pulses is:<br/><b id="currentTimeInPulses"></b></h2>
+    <a href="/centipulse_clock">Click here to use the Centipulse Clock on your computer</a>
 
     <h2>Examples</h2>
     <p>Here are some examples of how you might use our system in your daily life:</p>
@@ -81,7 +82,7 @@
             const Pulse = Math.floor(pulses - Hectopulse * 100 - Dekapulse * 10);
             const Decipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse) * 10);
             const Centipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse - Decipulse / 10) * 100);
-            return `${Hectopulse} hectopulses, ${Dekapulse} dekapulses, ${Pulse} pulses, ${Decipulse} decipulses, and ${Centipulse} centipulses.<br/>Or ${pulses.toFixed(3)} total pulses<br/>Or simply ${Hectopulse}:${Dekapulse}${Pulse}<br/>(instead of ${new Date(startOfDayInMilliseconds + inMilliseconds).toLocaleTimeString()})`;
+            return `${Hectopulse} hectopulses, ${Dekapulse} dekapulses, ${Pulse} pulses, ${Decipulse} decipulses, and ${Centipulse} centipulses.<br/>Or ${pulses.toFixed(3)} total pulses<br/>Or simply ${Hectopulse}:${Dekapulse}${Pulse}:${Decipulse}${Centipulse} cp ("cp" stands for "centipulse")<br/>(instead of ${new Date(startOfDayInMilliseconds + inMilliseconds).toLocaleTimeString()})`;
         }
 
         function updateCurrentTimeInPulses() {

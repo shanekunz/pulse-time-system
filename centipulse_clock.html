@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse Clock</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0e5ec;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #clock {
+            background: #e0e5ec;
+            border-radius: 20px;
+            box-shadow: 11px 11px 22px #bebebe,
+                        -11px -11px 22px #ffffff;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock">
+    <h1>Right now, the time in <b><u>Pulses</u></b> is:</h1>
+    <div id="currentTimeInPulses"></div>
+    </div>
+    
+</body>
+<script>
+    setInterval(updateCurrentTimeInPulses, 864/10);
+    function timeToPulse(time) {
+        const startOfDay = new Date(time.getFullYear(), time.getMonth(), time.getDate());
+        const totalSeconds = (time.getTime() - startOfDay.getTime()) / 1000;
+        const pulses = totalSeconds / 86.4;
+        
+        return pulses;
+    }
+
+    function getTimeInPulses(pulses) {
+        const inMilliseconds = pulses * 86.4 * 1000;
+        const now = new Date();
+        const startOfDayInMilliseconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const Hectopulse = Math.floor(pulses / 100);
+        const Dekapulse = Math.floor((pulses - Hectopulse * 100) / 10);
+        const Pulse = Math.floor(pulses - Hectopulse * 100 - Dekapulse * 10);
+        const Decipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse) * 10);
+        const Centipulse = Math.floor((pulses - Hectopulse * 100 - Dekapulse * 10 - Pulse - Decipulse / 10) * 100);
+        return htmlWrap(`<b>${Hectopulse}:${Dekapulse}${Pulse}:${Decipulse}${Centipulse} cp</b>`, 50)
+           + htmlWrap(`<b>${Hectopulse}</b> hectopulses, <b>${Dekapulse}</b> dekapulses, <b>${Pulse}</b> pulses, <b>${Decipulse}</b> decipulses, and <b>${Centipulse}</b> centipulses<br/>`, 16)
+        + htmlWrap(`<b>${pulses.toFixed(3)}</b> total pulses`, 18)
+        
+        + `<p style="color:lightcoral; text-align: center; font-size: 11px;">(instead of <b>${new Date(startOfDayInMilliseconds + inMilliseconds).toLocaleTimeString()}</b>)</p>`
+        + `<p style="color:lightblue; text-align: center; font-size: 11px;">*cp stands for centipulses</p>`;
+    }
+
+    function htmlWrap(string, font){
+        return `<div style="background: #e0e5ec; border-radius: 20px; box-shadow: 11px 11px 22px #bebebe, -11px -11px 22px #ffffff; padding: 20px; margin: 20px;">
+                    <p style="font-size: ${font}px; color: #333; margin: 0; padding: 0; text-align: center;">
+                        ${string}
+                    </p>
+                </div>`
+    }
+
+    function updateCurrentTimeInPulses() {
+        const now = new Date();
+        const pulses = timeToPulse(now);
+        const pulsesString = getTimeInPulses(pulses);
+        const currentTimeInPulses = document.getElementById("currentTimeInPulses");
+        currentTimeInPulses.innerHTML = pulsesString;
+    }
+</script>
